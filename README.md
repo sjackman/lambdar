@@ -1,4 +1,4 @@
-# Lambdar: Evaluate an R expression on AWS Lambda
+# Lambdar (ƛR): Evaluate an R expression on AWS Lambda
 
 Run R on AWS Lambda using [Linuxbrew](http://linuxbrew.sh).
 
@@ -27,4 +27,4 @@ See the Lambda function [lambdar.js](lambdar.js) and [Makefile](Makefile).
 [1] 3.141593
 ```
 
-Sadly, HTTP PUT does not work with http://lambdar.sjackman.ca.
+Sadly, HTTP PUT does not work with the redirected URL <http://lambdar.sjackman.ca>.
