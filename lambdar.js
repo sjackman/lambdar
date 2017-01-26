@@ -7,7 +7,12 @@ const spawnSync = require('child_process').spawnSync;
 const version = '3.3.2';
 
 function spawn(command, args) {
-    const output = spawnSync(command, args);
+    const output = spawnSync(command, args, {
+        env: {
+            HOME: process.cwd(),
+            LD_LIBRARY_PATH: '/var/task/lib'
+        }
+    });
     if (output.error != null) {
         console.log(output);
         return output.error.toString();
@@ -25,12 +30,17 @@ function install_r() {
     fs.symlinkSync('/lib64/ld-linux-x86-64.so.2', '/tmp/.linuxbrew/lib/ld.so');
     fs.mkdirSync('/tmp/.linuxbrew/Cellar');
     spawn('tar', ['xf', `/var/task/r-${version}.x86_64_linux.bottle.tar.gz`, '-C', '/tmp/.linuxbrew/Cellar']);
-    process.env.HOME = '/tmp';
-    process.env.LD_LIBRARY_PATH = '/var/task/lib:/tmp/.linuxbrew/Cellar/r/3.3.2/lib/R/lib';
-    process.chdir('/tmp');
+}
+
+function chdir_home() {
+    const path = `/tmp/${process.pid}.${Math.random()}`;
+    fs.mkdirSync(path);
+    process.env.HOME = path;
+    process.chdir(path);
 }
 
 function eval_r(expr) {
+    chdir_home();
     return spawn(`/tmp/.linuxbrew/Cellar/r/${version}/bin/Rscript`, ['-e', expr])
 }
 
