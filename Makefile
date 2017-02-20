@@ -36,6 +36,11 @@ lib/%: /usr/lib64/%
 	mkdir -p $(@D)
 	cp $< $@
 
+# Copy dependencies from /usr/lib/ (Ubuntu 16.04)
+lib/%: /usr/lib/%
+	mkdir -p $(@D)
+	cp $< $@
+
 # Copy dependencies from /usr/lib/x86_64-linux-gnu/ (Ubuntu 16.04)
 lib/%: /usr/lib/x86_64-linux-gnu/%
 	mkdir -p $(@D)
@@ -47,7 +52,11 @@ r-%.x86_64_linux.bottle.tar.gz: .linuxbrew/Cellar/r/%/INSTALL_RECEIPT.json
 
 # Build the zip archive for Lambda
 %.zip: %.js r-$(rversion).x86_64_linux.bottle.tar.gz \
+		lib/libatlas.so.3 \
 		lib/libbz2.so.1.0 \
+		lib/libblas.so.3 \
+		lib/libicuuc.so.55 \
+		lib/libicui18n.so.55 \
 		lib/libgfortran.so.3 \
 		lib/libncursesw.so.6 \
 		lib/libpcre.so.1 \
@@ -57,4 +66,8 @@ r-%.x86_64_linux.bottle.tar.gz: .linuxbrew/Cellar/r/%/INSTALL_RECEIPT.json
 
 # Deploy the zip to Lambda
 %.zip.json: %.zip
-	aws lambda update-function-code --function-name $* --zip-file fileb://$< > $@
+	aws --cli-read-timeout 0 --cli-connect-timeout 0 lambda update-function-code --function-name $* --zip-file fileb://$< > $@
+
+
+clean:
+	rm $(name).zip
