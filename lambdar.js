@@ -77,6 +77,6 @@ exports.handler = (event, context, callback) => {
             done(null, eval_r(expr));
             break;
         default:
-            done(new Error(`Unsupported method "${event.httpMethod}"`));
+        done(new Error(`lambdar.js: Unsupported HTTP method "${event.httpMethod}"`));
     }
 };
