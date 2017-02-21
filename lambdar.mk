@@ -21,8 +21,8 @@ prune: /tmp/r/$(R_VERSION)
 	@rm -f $(R_PREFIX)/lib64/R/COPYING $(R_PREFIX)/lib64/R/SVN-REVISION
 	@rm -rf $(R_PREFIX)/lib64/R/doc/*
 	@mkdir -p /tmp/r/3.3.2/lib64/R/doc/html ## install.packages()
-#	@rm -f $(R_PREFIX)/lib64/R/doc/NEWS*
-#	@rm -rf $(R_PREFIX)/lib64/R/doc/manual*
+	@rm -f $(R_PREFIX)/lib64/R/doc/NEWS*
+	@rm -rf $(R_PREFIX)/lib64/R/doc/manual*
 	@rm -rf $(R_PREFIX)/lib64/R/library/*/doc
 	@rm -rf $(R_PREFIX)/lib64/R/library/*/html
 	@rm -rf $(R_PREFIX)/lib64/R/library/translations
