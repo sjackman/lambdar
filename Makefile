@@ -31,4 +31,4 @@ test: r-$(R_VERSION).tar.gz
 
 clean:
 	@rm -f r-$(R_VERSION).tar.gz
-	@rm $(name).zip
+	@rm -f $(name).zip
