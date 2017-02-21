@@ -17,7 +17,7 @@ all: r-$(R_VERSION).tar.gz
 
 # Copy dependencies from amazonlinux-minimal-r build
 lib/%: /tmp/r/$(R_VERSION)
-	@echo cp $(shell ldconfig -p | grep $(@F) | sed 's|.*=> ||g') $(R_PREFIX)/lib64/R/lib
+	cp $(shell ldconfig -p | grep $(@F) | sed 's|.*=> ||g') $(R_PREFIX)/lib64/R/lib
 
 # Build the tarball of R and all of its dependencies
 r-%.tar.gz: /tmp/r/% lib/libgfortran.so.3 lib/libquadmath.so.0 lib/libgomp.so.1
