@@ -1,7 +1,7 @@
-# Lambdar: Run R on AWS Lambda
+# Lambdar: Build R for Amazon Linux and deploy to AWS Lambda
 name=lambdar
 
-rversion=3.3.2
+R_VERSION=3.3.2
 
 .DELETE_ON_ERROR:
 .SECONDARY:
@@ -14,11 +14,11 @@ deploy: $(name).zip.json
 r-%.tar.gz:
 	docker run -v $(PWD):/xfer -w /xfer henrikbengtsson/amazonlinux-r-minimal make -f lambdar.mk
 
-test: r-$(rversion).tar.gz
-	docker run -i -t -v $(PWD):/xfer -w /xfer amazonlinux
+test: r-$(R_VERSION).tar.gz
+	docker run --env R_VERSION=$(R_VERSION) -v $(PWD):/xfer -w /xfer amazonlinux bash -C test-r.sh
 
 # Build the zip archive for AWS Lambda
-%.zip: %.js r-$(rversion).tar.gz
+%.zip: %.js r-$(R_VERSION).tar.gz
 	zip -qr $@ $^
 
 # Deploy the zip to Lambda
@@ -26,5 +26,5 @@ test: r-$(rversion).tar.gz
 	aws lambda update-function-code --function-name $* --zip-file fileb://$< > $@
 
 clean:
-	@rm -f r-$(rversion).tar.gz
+	@rm -f r-$(R_VERSION).tar.gz
 	@rm $(name).zip
