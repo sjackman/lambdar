@@ -10,7 +10,7 @@ function spawn(command, args) {
     const output = spawnSync(command, args, {
         env: {
             HOME: process.cwd(),
-            LD_LIBRARY_PATH: '/var/task/lib'
+            LD_LIBRARY_PATH: '/tmp/r/${version}/lib64/R/lib'
         }
     });
     if (output.error != null) {
@@ -23,13 +23,9 @@ function spawn(command, args) {
 }
 
 function install_r() {
-    if (fs.existsSync('/tmp/.linuxbrew'))
+    if (fs.existsSync('/tmp/r'))
         return;
-    fs.mkdirSync('/tmp/.linuxbrew');
-    fs.mkdirSync('/tmp/.linuxbrew/lib');
-    fs.symlinkSync('/lib64/ld-linux-x86-64.so.2', '/tmp/.linuxbrew/lib/ld.so');
-    fs.mkdirSync('/tmp/.linuxbrew/Cellar');
-    spawn('tar', ['xf', `/var/task/r-${version}.x86_64_linux.bottle.tar.gz`, '-C', '/tmp/.linuxbrew/Cellar']);
+    spawn('tar', ['xf', `/var/task/r-${version}.tar.gz`, '-C', '/tmp/']);
 }
 
 function chdir_home() {
@@ -41,7 +37,7 @@ function chdir_home() {
 
 function eval_r(expr) {
     chdir_home();
-    return spawn(`/tmp/.linuxbrew/Cellar/r/${version}/bin/Rscript`, ['-e', expr])
+    return spawn(`/tmp/r/${version}/bin/Rscript`, ['-e', expr])
 }
 
 /**
@@ -77,6 +73,6 @@ exports.handler = (event, context, callback) => {
             done(null, eval_r(expr));
             break;
         default:
-        done(new Error(`lambdar.js: Unsupported HTTP method "${event.httpMethod}"`));
+            done(new Error(`Unsupported method "${event.httpMethod}"`));
     }
 };
