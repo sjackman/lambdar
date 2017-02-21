@@ -1,10 +1,10 @@
 ## Build usage:
-##  docker build -t henrikbengtsson/lambda-r:build .
+##  docker build -t henrikbengtsson/lambdar:build .
 ##
 ## Run usage:
-##  docker run -i -t henrikbengtsson/lambda-r:build bash
+##  docker run -i -t henrikbengtsson/lambdar:build bash
 ##
-## Source: https://github.com/HenrikBengtsson/lambda-r
+## Source: https://github.com/{HenrikBengtsson|sjackman}/lambdar
 ## Copyright: Henrik Bengtsson (2017)
 ## License: GPL (>= 2.1) [https://www.gnu.org/licenses/gpl.html]
 
