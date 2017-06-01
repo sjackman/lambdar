@@ -1,4 +1,12 @@
 # Lambdar: Build R for Amazon Linux and deploy to AWS Lambda
+#
+# Usage:
+#  make          - build minimal r-$(R_VERSION).tar.gz (via Docker)
+#  make test     - quick check that the built R version works
+#  make deploy   - deploy to AWS Lambda
+#
+# The Docker container henrikbengtsson/lambdar:build is defined by
+# the docker-lambdar/Dockerfile file.
 name=lambdar
 
 R_VERSION=3.3.2
@@ -6,9 +14,9 @@ R_VERSION=3.3.2
 # R must be built on a system compatible with Amazon Linux with glibc <= 2.17.
 glibc_version=$(shell ldd --version | head -1 | sed -E 's/.*GLIBC[[:space:]]([0-9.-]+).*/\1/g' | tr - .)
 glibc_version_smallest=$(shell printf "$(glibc_version)\n2.17" | sort -V | head -1)
-ifeq ($(glibc_version_smallest), 2.17)
-  $(error "ERROR: R must be built with GLIBC (<= 2.17) in order to work on AWS Lambda: $(glibc_version)")
-endif
+#ifeq ($(glibc_version_smallest), 2.17)
+#  $(error "ERROR: R must be built with GLIBC (<= 2.17) in order to work on AWS Lambda: $(glibc_version)")
+#endif
 
 .DELETE_ON_ERROR:
 .SECONDARY:
@@ -16,7 +24,7 @@ endif
 all: $(name).zip
 
 debug:
-	@echo "R version: $(rversion)"
+	@echo "R version: $(R_VERSION)"
 	@echo "GLIBC version: $(glibc_version)"
 
 deploy: $(name).zip.json
@@ -25,11 +33,8 @@ deploy: $(name).zip.json
 r-%.tar.gz: lambdar.mk
 	docker run -v $(PWD):/xfer -w /xfer henrikbengtsson/lambdar:build make -f lambdar.mk
 
-test-version: r-$(R_VERSION).tar.gz test-r-interactive.sh
-	docker run --env R_VERSION=$(R_VERSION) -v $(PWD):/xfer -w /xfer lambci/lambda-base bash -C test-r.sh
-
 test: r-$(R_VERSION).tar.gz
-	docker run -it --env INTERACTIVE=true --env R_VERSION=$(R_VERSION) -v $(PWD):/xfer -w /xfer lambci/lambda-base bash -C test-r.sh
+	docker run -it --env INTERACTIVE=true --env R_VERSION=$(R_VERSION) -v $(PWD):/xfer -w /xfer henrikbengtsson/lambdar:build bash -C test-r.sh
 
 # Build the zip archive for AWS Lambda
 %.zip: %.js r-$(R_VERSION).tar.gz
