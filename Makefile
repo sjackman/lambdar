@@ -1,7 +1,8 @@
 # Lambdar: Build R for Amazon Linux and deploy to AWS Lambda
 #
 # Usage:
-#  make          - build minimal r-$(R_VERSION).tar.gz (via Docker)
+#  make docker   - build AWS Lambda compatible R Docker container
+#  make lambdar  - build minimal r-$(R_VERSION).tar.gz for AWS Lambda
 #  make test     - quick check that the built R version works
 #  make deploy   - deploy to AWS Lambda
 #
@@ -21,7 +22,12 @@ glibc_version_smallest=$(shell printf "$(glibc_version)\n2.17" | sort -V | head 
 .DELETE_ON_ERROR:
 .SECONDARY:
 
-all: $(name).zip
+all: docker lambdar
+
+lambdar: $(name).zip
+
+docker:
+	docker build -t henrikbengtsson/lambdar:build docker-lambdar/
 
 debug:
 	@echo "R version: $(R_VERSION)"
