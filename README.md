@@ -1,6 +1,6 @@
 # ƛR: Lambdar
 
-Run R on AWS Lambda using [Linuxbrew](http://linuxbrew.sh).
+Run R on AWS Lambda.
 
 # tl;dr
 
