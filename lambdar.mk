@@ -23,8 +23,14 @@ prune: /tmp/r/$(R_VERSION)
 	@mkdir -p /tmp/r/$(R_VERSION)/lib64/R/doc/html ## install.packages()
 	@rm -f $(R_PREFIX)/lib64/R/doc/NEWS*
 	@rm -rf $(R_PREFIX)/lib64/R/doc/manual*
+	@rm -rf $(R_PREFIX)/lib64/R/doc
+	@rm -rf $(R_PREFIX)/lib64/R/share/licenses/
+	@rm -rf $(R_PREFIX)/lib64/R/library/*/demo
+	@rm -rf $(R_PREFIX)/lib64/R/library/*/Meta/demo.rds
+	@rm -rf $(R_PREFIX)/lib64/R/library/*/Meta/Rd.rds
 	@rm -rf $(R_PREFIX)/lib64/R/library/*/doc
 	@rm -rf $(R_PREFIX)/lib64/R/library/*/html
+	@rm -rf $(R_PREFIX)/lib64/R/library/*/help
 	@rm -rf $(R_PREFIX)/lib64/R/library/translations
 
 # Copy dependencies from amazonlinux-minimal-r build
