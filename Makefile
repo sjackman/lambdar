@@ -4,7 +4,8 @@
 #  make docker   - build AWS Lambda compatible R Docker container
 #  make lambdar  - build minimal r-$(R_VERSION).tar.gz for AWS Lambda
 #  make test     - quick check that the built R version works
-#  make deploy   - deploy to AWS Lambda
+#  make create   - Create AWS Lambda function from local ZIP file
+#  make deploy   - Update AWS Lambda function from local ZIP file
 #
 # The Docker container henrikbengtsson/lambdar:build is defined by
 # the docker-lambdar/Dockerfile file.
@@ -33,7 +34,9 @@ debug:
 	@echo "R version: $(R_VERSION)"
 	@echo "GLIBC version: $(glibc_version)"
 
-deploy: $(name).zip.json
+create: $(name).zip.create.json
+
+deploy: $(name).zip.deploy.json
 
 # Bundle up R and all of its dependencies
 r-%.tar.gz: lambdar.mk
@@ -46,9 +49,15 @@ test: r-$(R_VERSION).tar.gz
 %.zip: %.js r-$(R_VERSION).tar.gz
 	zip -qr $@ $^
 
-# Deploy the zip to Lambda (function name must not contain periods)
-%.zip.json: %.zip
-	aws lambda update-function-code --function-name $* --zip-file fileb://$< > $@
+# Create Lambda function from local ZIP (function name must not contain periods)
+# Required environment variables:
+# * AWS_LAMBDA_ROLE_ARN ="arn:aws:iam::<digits>:role/service-role/<name>"
+%.zip.create.json: %.zip
+aws lambda create-function --runtime nodejs8.10 --handler $*.handler --timeout 10 --role $$AWS_LAMBDA_ROLE_ARN --function-name $*-$(subst .,_,$(R_VERSION)) --description "R $(R_VERSION)" --zip-file fileb://$< > $@
+
+# Update the Lambda function from local ZIP
+%.zip.deploy.json: %.zip
+	aws lambda update-function-code --function-name $*-$(subst .,_,$(R_VERSION)) --zip-file fileb://$< > $@
 
 clean:
 	@rm -f r-$(R_VERSION).tar.gz
