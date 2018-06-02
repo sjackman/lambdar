@@ -1,6 +1,6 @@
 # lambdar: Build R to run on AWS Lambda
 
-R_VERSION=3.3.2
+R_VERSION=3.5.0
 
 R_PREFIX=/tmp/r/$(R_VERSION)
 
@@ -20,7 +20,7 @@ prune: /tmp/r/$(R_VERSION)
 	@rm -rf $(R_PREFIX)/share
 	@rm -f $(R_PREFIX)/lib64/R/COPYING $(R_PREFIX)/lib64/R/SVN-REVISION
 	@rm -rf $(R_PREFIX)/lib64/R/doc/*
-	@mkdir -p /tmp/r/3.3.2/lib64/R/doc/html ## install.packages()
+	@mkdir -p /tmp/r/$(R_VERSION)/lib64/R/doc/html ## install.packages()
 	@rm -f $(R_PREFIX)/lib64/R/doc/NEWS*
 	@rm -rf $(R_PREFIX)/lib64/R/doc/manual*
 	@rm -rf $(R_PREFIX)/lib64/R/library/*/doc

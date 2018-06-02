@@ -4,7 +4,7 @@ const fs = require('fs');
 const spawnSync = require('child_process').spawnSync;
 
 /** The version of R */
-const version = '3.3.2';
+const version = '3.5.0';
 
 function spawn(command, args) {
     const output = spawnSync(command, args, {

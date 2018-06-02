@@ -10,7 +10,7 @@
 # the docker-lambdar/Dockerfile file.
 name=lambdar
 
-R_VERSION=3.3.2
+R_VERSION=3.5.0
 
 # R must be built on a system compatible with Amazon Linux with glibc <= 2.17.
 glibc_version=$(shell ldd --version | head -1 | sed -E 's/.*GLIBC[[:space:]]([0-9.-]+).*/\1/g' | tr - .)
@@ -46,7 +46,7 @@ test: r-$(R_VERSION).tar.gz
 %.zip: %.js r-$(R_VERSION).tar.gz
 	zip -qr $@ $^
 
-# Deploy the zip to Lambda
+# Deploy the zip to Lambda (function name must not contain periods)
 %.zip.json: %.zip
 	aws lambda update-function-code --function-name $* --zip-file fileb://$< > $@
 
