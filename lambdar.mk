@@ -7,7 +7,7 @@ R_PREFIX=/tmp/r/$(R_VERSION)
 .DELETE_ON_ERROR:
 .SECONDARY:
 
-all: r-$(R_VERSION).tar.gz
+all: r-$(R_VERSION).tar.xz
 
 # Build R from source
 /tmp/r/%: /tmp/R-%
@@ -32,8 +32,14 @@ lib/%: /tmp/r/$(R_VERSION)
 	cp $(shell ldconfig -p | grep $(@F) | sed 's|.*=> ||g') $(R_PREFIX)/lib64/R/lib
 
 # Build the tarball of R and all of its dependencies
-r-%.tar.gz: /tmp/r/% lib/libgfortran.so.3 lib/libquadmath.so.0 lib/libgomp.so.1 prune
-	tar zcf $@ -C /tmp r/$*
+r-%.tar: /tmp/r/% lib/libgfortran.so.3 lib/libquadmath.so.0 lib/libgomp.so.1 prune
+	tar cf $@ -C /tmp r/$*
+
+r-%.tar.xz: r-%.tar
+	xz -9 $<
+
+r-%.tar.gz: r-%.tar
+	gzip -9 $<
 
 clean:
 	@rm -rf $(R_PREFIX)

@@ -25,7 +25,7 @@ function spawn(command, args) {
 function install_r() {
     if (fs.existsSync('/tmp/r'))
         return;
-    spawn('tar', ['xf', `/var/task/r-${version}.tar.gz`, '-C', '/tmp']);
+    spawn('tar', ['xf', `/var/task/r-${version}.tar.xz`, '-C', '/tmp']);
 }
 
 function chdir_home() {

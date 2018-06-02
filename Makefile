@@ -36,20 +36,23 @@ debug:
 deploy: $(name).zip.json
 
 # Bundle up R and all of its dependencies
-r-%.tar.gz: lambdar.mk
+r-%.tar.xz: lambdar.mk
 	docker run -v $(PWD):/xfer -w /xfer henrikbengtsson/lambdar:build make -f lambdar.mk
 
-test: r-$(R_VERSION).tar.gz
+#r-%.tar.xz: r-%.tar
+#	xz -9 $<
+
+test: r-$(R_VERSION).tar.xz
 	docker run -it --env INTERACTIVE=true --env R_VERSION=$(R_VERSION) -v $(PWD):/xfer -w /xfer henrikbengtsson/lambdar:build bash -C test-r.sh
 
 # Build the zip archive for AWS Lambda
-%.zip: %.js r-$(R_VERSION).tar.gz
-	zip -qr $@ $^
+%.zip: %.js r-$(R_VERSION).tar.xz
+	zip -q9r $@ $^
 
 # Deploy the zip to Lambda
 %.zip.json: %.zip
 	aws lambda update-function-code --function-name $* --zip-file fileb://$< > $@
 
 clean:
-	@rm -f r-$(R_VERSION).tar.gz
+	@rm -f r-$(R_VERSION).tar
 	@rm -f $(name).zip
