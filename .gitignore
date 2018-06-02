@@ -1,6 +1,7 @@
 *~
 lambdar.zip
-lambdar.zip.json
-r-3.3.2.tar.gz
+lambdar.zip*.json
+r-*.tar.gz
+r/
 test-r-interactive.sh
 .Rhistory
