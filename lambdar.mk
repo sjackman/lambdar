@@ -32,6 +32,9 @@ prune: /tmp/r/$(R_VERSION)
 	@rm -rf $(R_PREFIX)/lib64/R/library/*/html
 	@rm -rf $(R_PREFIX)/lib64/R/library/*/help
 	@rm -rf $(R_PREFIX)/lib64/R/library/translations
+	@ln -sf $(R_PREFIX)/lib64/R/bin/R $(R_PREFIX)/bin/R
+	@ln -sf $(R_PREFIX)/lib64/R/bin/Rscript $(R_PREFIX)/bin/Rscript
+
 
 # Copy dependencies from amazonlinux-minimal-r build
 lib/%: /tmp/r/$(R_VERSION)
